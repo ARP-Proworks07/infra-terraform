@@ -7,7 +7,9 @@ echo "[INFO] Bootstrap started at: $(date)"
 
 # --- Wait for apt locks and system readiness ---
 echo "[INFO] Waiting for system readiness..."
-while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || fuser /var/l# -------------------------------
+while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || fuser /varecho "[INFO] Amazon Clone application deployment completed!"
+
+# -------------------------------
 # Final Status Check and Summary
 # -------------------------------
 echo "[INFO] Performing final status check..."
@@ -35,8 +37,8 @@ done
 
 echo ""
 echo "Kubernetes status:"
-sudo kubectl get nodes --no-headers
-sudo kubectl get pods -A --no-headers | wc -l | xargs echo "Total pods running:"
+sudo kubectl get nodes --no-headers 2>/dev/null || echo "K3s not ready"
+sudo kubectl get pods -A --no-headers 2>/dev/null | wc -l | xargs echo "Total pods running:" || echo "No pods yet"
 
 echo ""
 echo "[INFO] ======== ACCESS INFORMATION ========"
@@ -66,9 +68,19 @@ To check logs:
 - sudo docker logs jenkins
 - sudo docker logs sonarqube
 - sudo docker compose -f /home/ubuntu/amazon-clone/docker-compose.prod.yml logs
+
+All Docker containers should be running. Use 'sudo docker ps' to verify.
 EOF
 
 chown ubuntu:ubuntu /home/ubuntu/deployment-status.txt
+
+# -------------------------------
+# Reboot if required
+# -------------------------------
+if [ -f /var/run/reboot-required ]; then
+    echo "[INFO] System reboot required. Rebooting..."
+    sudo reboot
+fi
 
 echo "[INFO] ======== Bootstrap Completed Successfully ========"
 echo "[INFO] Deployment completed at: $(date)"
