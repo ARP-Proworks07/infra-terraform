@@ -130,7 +130,7 @@ resource "aws_instance" "devops_server" {
 
   # Increase root volume size for all the services and applications
   root_block_device {
-    volume_size           = 50      # 50 GB disk (required for Jenkins, SonarQube, K3s, and Amazon Clone)
+    volume_size           = 40      # 40 GB disk (required for Jenkins, SonarQube, K3s, and Amazon Clone)
     volume_type           = "gp3"   # General Purpose SSD (faster performance)
     delete_on_termination = true   # Clean up storage when instance is terminated
     encrypted             = true   # Encrypt storage for security
